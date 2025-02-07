@@ -1,0 +1,34 @@
+name: Update Stocks
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Runs at the start of every hour
+  workflow_dispatch:  # Allows manual triggering
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Update stocks.json
+        run: |
+          mkdir -p data
+          node scripts/updateStocks.js
+
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/stocks.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update stocks.json" && git push)
