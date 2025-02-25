@@ -1,8 +1,6 @@
 name: Update Stocks
 
 on:
-  schedule:
-    - cron: '*/30 * * * *'  # Runs at the start of every hour
   workflow_dispatch:  # Allows manual triggering
 
 permissions:
